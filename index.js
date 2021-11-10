@@ -10,7 +10,6 @@ app.use(cors());
 app.use(express.json());
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.dngm2.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
-console.log(uri);
 const client = new MongoClient(uri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -21,10 +20,18 @@ async function run() {
     await client.connect();
     const database = client.db("bicycleHub");
     const productCollection = database.collection("products");
+    const reviewCollection = database.collection("reviews");
 
     // app.get
     app.get("/products", async (req, res) => {
-      console.log(req.body);
+      const result = await productCollection.find({}).toArray();
+      res.json(result);
+    });
+
+    // app.get
+    app.get("/reviews", async (req, res) => {
+      const result = await reviewCollection.find({}).toArray();
+      res.json(result);
     });
     // app.put
 
