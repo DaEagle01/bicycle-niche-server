@@ -30,6 +30,15 @@ async function run() {
       res.json(result);
     });
 
+    // add a product to the database
+    app.post("/products", async (req, res) => {
+      const product = req.body;
+      console.log(product, "aise product");
+      const result = await productCollection.insertOne(product);
+      res.json(result);
+      console.log(result);
+    });
+
     // app.get to get single bike data
     app.get("/products/:id", async (req, res) => {
       const id = req.params.id;
@@ -107,11 +116,20 @@ async function run() {
     });
 
     // get a single order
-    app.get("/orders/:id", async (req, res) => {
-      const id = req.params.id;
-      const query = { _id: ObjectId(id) };
-      const result = await allBookingCollection.findOne(query);
+    // app.get("/orders/:id", async (req, res) => {
+    //   const id = req.params.id;
+    //   const query = { _id: ObjectId(id) };
+    //   const result = await orderCollection.findOne(query);
+    //   res.json(result);
+    // });
+
+    app.get("/orders/:email", async (req, res) => {
+      const email = req.params.email;
+      console.log(email, "touched");
+      const query = { email: email };
+      const result = await orderCollection.find(query).toArray();
       res.json(result);
+      // console.log(result);
     });
 
     // change status of an order
@@ -120,11 +138,7 @@ async function run() {
       const updateStatus = req.body;
       const filter = { _id: ObjectId(id) };
       const options = { upsert: true };
-      const updateDoc = {
-        $set: {
-          status: updateStatus.status,
-        },
-      };
+      const updateDoc = { $set: { status: updateStatus.status } };
       const result = await orderCollection.updateOne(
         filter,
         updateDoc,
@@ -140,6 +154,15 @@ async function run() {
       const query = { _id: ObjectId(id) };
       const result = await orderCollection.deleteOne(query);
       res.json(result);
+    });
+
+    // giv review
+    app.post("/reviews", async (req, res) => {
+      const review = req.body;
+      console.log(review);
+      const result = await reviewCollection.insertOne(review);
+      res.json(result);
+      console.log(result);
     });
   } finally {
     // await client.close();
