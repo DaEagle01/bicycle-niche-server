@@ -55,8 +55,14 @@ async function run() {
 
     // app.post to order bike
     app.post("/products/:id", async (req, res) => {
+      console.log("lagse vai ");
       const result = await orderCollection.insertOne(req.body);
       res.json(result);
+    });
+
+    // update a product
+    app.put("/products/:id", async (req, res) => {
+      console.log(req.params.id);
     });
 
     // add users to the database
@@ -116,12 +122,23 @@ async function run() {
     });
 
     // get a single order
-    // app.get("/orders/:id", async (req, res) => {
-    //   const id = req.params.id;
-    //   const query = { _id: ObjectId(id) };
-    //   const result = await orderCollection.findOne(query);
-    //   res.json(result);
-    // });
+    app.delete("/products/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await orderCollection.deleteOne(query);
+      res.json(result);
+      console.log(result);
+    });
+
+    // delete a product
+    app.get("/products/:id", async (req, res) => {
+      console.log(req, "delete product");
+      // const id = req.params._id;
+      // const query = { _id: ObjectId(id) };
+      // const result = await productCollection.deleteOne(query);
+      // res.json(result);
+      // console.log(result);
+    });
 
     app.get("/orders/:email", async (req, res) => {
       const email = req.params.email;
@@ -156,7 +173,7 @@ async function run() {
       res.json(result);
     });
 
-    // giv review
+    // give review
     app.post("/reviews", async (req, res) => {
       const review = req.body;
       console.log(review);
